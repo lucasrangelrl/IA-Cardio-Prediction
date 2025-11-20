@@ -56,12 +56,11 @@ def treinar_hardcore():
     print("1. Carregando dados...")
     df = pd.read_csv(ARQUIVO_CSV, sep=';')
 
-    # Aplicar Engenharia ANTES da limpeza para poder filtrar pelo IMC depois
+    
     df = feature_engineering_avancada(df)
     df = limpeza_medica_agressiva(df)
 
-    # Remover coluna ID e a 'age' original (já temos age_years)
-    # Às vezes remover a original ajuda a não ter dados duplicados com nomes diferentes
+   
     if 'id' in df.columns: df = df.drop('id', axis=1)
     
     X = df.drop('cardio', axis=1)
@@ -72,12 +71,11 @@ def treinar_hardcore():
 
     print("2. Treinando Gradient Boosting (Isso é mais pesado que Random Forest)...")
     
-    # O GradientBoostingClassifier é um dos "segredos" para alta acurácia
-    # Ele cria árvores sequenciais, onde uma corrige o erro da anterior
+    
     modelo = GradientBoostingClassifier(
-        n_estimators=200,     # Número de árvores
-        learning_rate=0.1,    # Velocidade de aprendizado
-        max_depth=5,          # Profundidade para capturar complexidade
+        n_estimators=200,     
+        learning_rate=0.1,    
+        max_depth=5,          
         random_state=42
     )
     modelo.fit(X_train, y_train)
@@ -92,11 +90,11 @@ def treinar_hardcore():
     print(f"Acurácia: {acuracia * 100:.2f}%")
     print("-" * 40)
 
-    # Salvar modelo
+    
     joblib.dump(modelo, MODELO_ARQUIVO)
     print("Modelo salvo!")
     
-    # Feature Importance Visual
+    
     plt.figure(figsize=(10, 6))
     importancias = modelo.feature_importances_
     indices = pd.Series(importancias, index=X.columns).sort_values(ascending=False)
