@@ -2,11 +2,11 @@ import joblib
 import pandas as pd
 import time
 
-# 1. Carregar a IA
+
 print(">>> Carregando o cérebro da IA...")
 modelo = joblib.load('modelo_cardio_avancado.joblib')
 
-# 2. Criando uma lista de pacientes diferentes para testar
+
 fila_de_espera = [
     {
         "nome": "Paciente 1 (O Atleta)",
@@ -63,15 +63,15 @@ def examinar_paciente(paciente_info):
     nome = paciente_info['nome']
     dados_brutos = paciente_info['dados']
     
-    # Transforma dicionário em DataFrame
+    
     df = pd.DataFrame([dados_brutos])
 
-    # --- ENGENHARIA DE FEATURES (A mesma do treino) ---
+    
     df['age_years'] = (df['age'] / 365.25).round().astype(int)
     df['bmi'] = df['weight'] / ((df['height'] / 100) ** 2)
     df['pulse_pressure'] = df['ap_hi'] - df['ap_lo']
 
-    # Ordenar colunas (Gradient Boosting exige ordem exata)
+    
     colunas = [
         'age', 'gender', 'height', 'weight', 'ap_hi', 'ap_lo', 
         'cholesterol', 'gluc', 'smoke', 'alco', 'active', 
@@ -79,7 +79,7 @@ def examinar_paciente(paciente_info):
     ]
     df = df[colunas]
 
-    # Previsão
+    
     predicao = modelo.predict(df)[0]
     probabilidade = modelo.predict_proba(df)[0]
     
@@ -93,9 +93,9 @@ def examinar_paciente(paciente_info):
     else:
         print(f"✅ DIAGNÓSTICO: BAIXO RISCO (Apenas {risco_pct:.2f}% de chance de doença)")
     
-    time.sleep(1) # Pausa para leitura
+    time.sleep(1) 
 
-# 4. Loop principal
+
 print(f"\nIniciando triagem de {len(fila_de_espera)} pacientes...")
 for p in fila_de_espera:
     examinar_paciente(p)
